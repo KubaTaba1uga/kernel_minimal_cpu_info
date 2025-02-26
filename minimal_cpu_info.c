@@ -4,8 +4,8 @@
  * Brief Description:
  * A very simple module which prints to logs following informations about the cpu:
  *  - CPU architecture (x86, arm, amd64 etc.)
- *  - Word length
- *  - Endianess
+ *  - Long Word length
+ *  - Endianness
  */
 
 #define pr_fmt(fmt) "%s:%s(): " fmt, KBUILD_MODNAME, __func__
@@ -18,10 +18,9 @@ MODULE_DESCRIPTION("a simple LKM showing cpu informations in logs");
 MODULE_LICENSE("Dual MIT/GPL");	
 MODULE_VERSION("0.1");
 
-
-
 static int __init minimal_cpu_info_init(void)
-{const char * cpu_family_name, word_length, endianess;
+{const char * cpu_family_name = "Unkown", *endianess = "Unkown";
+  int word_length = -1;
 
        // In arch/x86/Kconfig you can find two config variables representing
        //   x86 architecture X86 and X86_64. These and other config variables
@@ -45,9 +44,23 @@ static int __init minimal_cpu_info_init(void)
        cpu_family_name = "arm64";
        #endif
 
-  
-	pr_info("inserted\n");
-	return 0;		/* success */
+       // In include/asm-generic/bitsperlong.h (asm stands for assembler btw.)
+       //   there are defined macro describing how many bits are used per long
+       //   word.
+       word_length = BITS_PER_LONG;
+
+       // GCC or Clang sets __BYTE_ORDER__ macro but kernel also defines CONFIG_CPU_BIG_ENDIAN
+       //   and CONFIG_CPU_LITTLE_ENDIAN in the same purpouse. You can find usage of both in
+       //   various defconfigs.
+       #ifdef CONFIG_CPU_LITTLE_ENDIAN
+       endianess="little endian";
+       #endif       
+       #ifdef CONFIG_CPU_BIG_ENDIAN
+       endianess="big endian";
+       #endif
+       
+       pr_info("inserted\n");
+       return 0;		/* success */
 }
 
 static void __exit minimal_cpu_info_exit(void)
