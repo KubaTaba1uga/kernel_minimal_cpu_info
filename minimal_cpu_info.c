@@ -43,19 +43,19 @@
  *   According to arm docs https://developer.arm.com/documentation/ddi0602/2024-12/Base-Instructions/ADRP--Form-PC-relative-address-to-4KB-page-?lang=en
  *   ADRP instruction is getting memory address from relative location and stores it in registry. I'm
  *   not an exper in assembly but i undesrtand it like this:
-                There is some data in binary which is automatically load into memory, but program needs to
+                There is some data in binary which is automatically loaded into memory, but program needs to
                 fetch this automatically created address somehow. That's why we need ADRP instruction to get
-                address of this automatically filled memory space and do not read from disk.
+                address of this automatically filled memory space and do not read from disk each time.
  *   So for example this:
                 20:   90000003        adrp    x3, 0 <init_module-0x8>
                                       20: R_AARCH64_ADR_PREL_PG_HI21  .rodata.str1.8
  *   Is setting x3 register to `.rodata.str1.8` section memory address.
  *   ADD instruction is just adding some offset to the memory address we obtain from ADRP, this is done
- *   to point to particullar data. So for example this:
+ *   to point to a particullar data inside memory region like `.rodata.str1.8`. So for example this:
                 24:   91000063        add     x3, x3, #0x0
                                       24: R_AARCH64_ADD_ABS_LO12_NC   .rodata.str1.8
- *   Loads address of memory and apply 0x0 offset. We can confirm that under 0x0 offset in .rodata.str1.8
- *   section is some valid string:
+ *   Loads address of memory stored in x3 and apply 0x0 offset to it.
+ *   We can confirm that under 0x0 offset in `.rodata.str1.8` section is some valid string:
                aarch64-linux-gnu-objdump -s -j .rodata.str1.8 minimal_cpu_info.ko
  *   In my binary this is `little endian`:
                minimal_cpu_info.ko:     file format elf64-littleaarch64
@@ -81,12 +81,13 @@
  *   which implements fetching data when you do:
                 cat /proc/cpuinfo
  *   You can see that fetching data about cpu is pretty much architecture dependent thing. So in kernel space
- *   We do not have portible way to find out architecture of all porocessors beside writing bunch of assembly
- *   code which will fetch cpu data for each processor. However if we add one more card to the table the
- *   solution may seem easier to notice. Each kernel build is created per architetecture. So kernel build for
- *   x86 will not run on arm. This means that configuration specified during the kernel build needs to specify
- *   informations like cpu architecture. Each configuration set in .config file can be acessed from within
- *   kernel src code, making it vailable src of informations realting the machine that kernel will be run on. 
+ *   you do not have portible way to find out architecture of all porocessors beside writing bunch of assembly
+ *   code which will fetch cpu data for each processor architecture. However if we add one more card to the
+ *   table quite easy solution may show up itself. Each kernel build is created per architetecture. So kernel
+ *   build for x86 will not run on arm64 and vice versa. This means that configuration specified during the
+ *   kernel build describes the machine that it will be run on. So when you are configuring your kernel via
+ *   menuconfig you're setting variables which can be acessed from within kernel src code, making .config
+ *   vailable src of informations describing the machine that kernel will be run on.
  */
 
 #include <linux/init.h>
