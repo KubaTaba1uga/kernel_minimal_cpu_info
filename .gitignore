@@ -1,7 +1,7 @@
-*.o
+*.o*
 *.mod*
-*.ko
-*.order
-*.symvers
+*.ko*
+*.order*
+*.symvers*
 *~*
 *#*
