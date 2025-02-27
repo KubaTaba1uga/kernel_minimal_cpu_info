@@ -43,9 +43,9 @@
  *   According to arm docs https://developer.arm.com/documentation/ddi0602/2024-12/Base-Instructions/ADRP--Form-PC-relative-address-to-4KB-page-?lang=en
  *   ADRP instruction is getting memory address from relative location and stores it in registry. I'm
  *   not an exper in assembly but i undesrtand it like this:
- *        There is some data in binary which is automatically load into memory, but program needs to
- *        fetch this automatically created address somehow. That's why we need ADRP instruction to get
- *        address of this automatically filled memory space and do not read from disk.
+		There is some data in binary which is automatically load into memory, but program needs to
+		fetch this automatically created address somehow. That's why we need ADRP instruction to get
+		address of this automatically filled memory space and do not read from disk.
  *   So for example this:
 		20:   90000003        adrp    x3, 0 <init_module-0x8>
 				      20: R_AARCH64_ADR_PREL_PG_HI21  .rodata.str1.8
