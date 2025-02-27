@@ -71,8 +71,8 @@
 		0070 2025730a 00                           %s..
  *   So code is setting fourth argument (x0 is first argument) of _printk via register x3 to `little endian`.
  *   This is matching what we could expect from our C code:
-	pr_info("Cpu architecture: %s\nLong Word length: %d\nEndianness: %s\n",
-		cpu_family_name, word_length, endianess); 
+	       pr_info("Cpu architecture: %s\nLong Word length: %d\nEndianness: %s\n",
+		       cpu_family_name, word_length, endianess); 
  *   Where `endianess` is fourth argument of the pr_info function. Ok so we confirmed that data is hardcoded
  *   in the binary (pretty big offtop i know xd) so finally let's understand why? Why hardcoding data in binary
  *   is okay if we want to create kernel module which should show some cpu info? Shouldn't we take this data
