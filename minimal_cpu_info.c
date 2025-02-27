@@ -84,10 +84,9 @@
  *   you do not have portible way to find out architecture of all porocessors beside writing bunch of assembly
  *   code which will fetch cpu data for each processor architecture. However if we add one more card to the
  *   table quite easy solution may show up itself. Each kernel build is created per architetecture. So kernel
- *   build for x86 will not run on arm64 and vice versa. This means that configuration specified during the
- *   kernel build describes the machine that it will be run on. So when you are configuring your kernel via
+ *   build for x86 will not run on arm64 and vice versa. . So when you are configuring your kernel via
  *   menuconfig you're setting variables which can be acessed from within kernel src code, making .config
- *   vailable src of informations describing the machine that kernel will be run on.
+ *   vailable src of informations about the machine that kernel will be run on.
  */
 
 #include <linux/init.h>
